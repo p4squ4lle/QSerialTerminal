@@ -1,6 +1,9 @@
 from serial import Serial, SerialException
 import serial.tools.list_ports
 
+DEFAULT_SERIAL_TIMEOUT = 1    # [second]
+
+
 class SerialConnection():
     """
     establish a serial connection to a device and receive/send serial data.
@@ -18,7 +21,7 @@ class SerialConnection():
 
         self.refresh_portlist()
     
-    def connect(self, port, baudrate, timeout):
+    def connect(self, port, baudrate, timeout=DEFAULT_SERIAL_TIMEOUT):
         self.port = port
         self.baudrate = baudrate
         self.timeout = timeout
