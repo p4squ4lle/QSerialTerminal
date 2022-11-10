@@ -7,7 +7,7 @@ from UI_SerialTerminal import UI_SerialTerminal
 from SerialConnection import SerialConnection
 
 SERIAL_TIMEOUT = 1    # [seconds]
-DEFAULT_BAUDRATES = ['9600', '19200', '115200']
+
 
 def ps(thing_to_print=1):
         print(thing_to_print)
@@ -23,7 +23,7 @@ class SerialTerminal(UI_SerialTerminal):
         self.connect_btn.clicked.connect(self.on_connect_btn_clicked)
         self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
 
-        
+
 
     def on_connect_btn_clicked(self):
         if not self.ser.connected:

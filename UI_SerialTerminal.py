@@ -11,6 +11,7 @@ MAIN_WINDOW_MIN_SIZE = QSize(400, 300)
 
 DEFAULT_BAUDRATES = ['9600', '19200', '115200']
 
+
 class UI_SerialTerminal(QMainWindow):
     def __init__(self):
         super().__init__()
