@@ -56,10 +56,14 @@ class UI_SerialTerminal(QMainWindow):
         self.port_baud_connect_layout.addLayout(self.port_baud_layout)
         self.port_baud_connect_layout.addLayout(self.connect_layout)
 
+        # =====================================================================
+        # Terminal
+        # =====================================================================
         self.cursor_line = 0
         self.cursor_col = 0
         self.terminal = QPlainTextEdit()
         self.terminal.setReadOnly(True)
+        self.terminal.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
         self.terminal.cursorPositionChanged.connect(
             self.on_cursor_position_changed
         )
@@ -83,17 +87,21 @@ class UI_SerialTerminal(QMainWindow):
         self.statusbar.showMessage(line_col_string)
         
     def eventFilter(self, obj, event):
-        if obj is self.terminal:
+        if obj is self.terminal and self.terminal.hasFocus():
             if event.type() == QEvent.Type.KeyPress:
-                if self.terminal.hasFocus():
-                    if event.key() == Qt.Key.Key_Return:
-                        self.on_enter_pressed()
-                        return True
-                    if event.key() == Qt.Key.Key_Backspace:
-                        return self.on_backspace_pressed()
-                    if event.key() == Qt.Key.Key_Up:
-                        print('up key was pressed')
-                        return True
+                if event.key() == Qt.Key.Key_Return:
+                    self.on_enter_pressed()
+                    return True
+                if event.key() == Qt.Key.Key_Backspace:
+                    return self.on_backspace_pressed()
+                if event.key() == Qt.Key.Key_Up:
+                    print('up key was pressed')
+                    return True
+                if event.key() == Qt.Key.Key_Down:
+                    print('down key was pressed')
+                    return True
+                if event.key() == Qt.Key.Key_Left:
+                    return self.on_backspace_pressed()
 
         if event.type() in (QEvent.Type.MouseButtonDblClick,
                             QEvent.Type.MouseButtonPress,
