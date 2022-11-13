@@ -1,16 +1,20 @@
 from PySide6.QtCore import QSize, Qt, QEvent
+from PySide6.QtGui import QKeySequence
 from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel, QMainWindow,
                                QPlainTextEdit, QPushButton, QVBoxLayout,
-                               QWidget, QStatusBar)
+                               QWidget, QStatusBar,)
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
-MAIN_WINDOW_TITLE = 'QSerialTerminal'
+MAIN_WINDOW_TITLE = 'QSerTer'
 MAIN_WINDOW_MIN_SIZE = QSize(400, 300)
 
 DEFAULT_BAUDRATES = ['9600', '19200', '115200']
-
+KEYS_TO_BYPASS = [Qt.Key.Key_PageUp,
+                  Qt.Key.Key_PageDown,
+                  Qt.Key.Key_Home,
+                  Qt.Key.Key_End]
 
 class UI_SerialTerminal(QMainWindow):
     def __init__(self):
@@ -89,6 +93,8 @@ class UI_SerialTerminal(QMainWindow):
     def eventFilter(self, obj, event):
         if obj is self.terminal and self.terminal.hasFocus():
             if event.type() == QEvent.Type.KeyPress:
+                if event.key() in KEYS_TO_BYPASS:
+                    return True
                 if event.key() == Qt.Key.Key_Return:
                     self.on_enter_pressed()
                     return True
@@ -102,6 +108,15 @@ class UI_SerialTerminal(QMainWindow):
                     return True
                 if event.key() == Qt.Key.Key_Left:
                     return self.on_backspace_pressed()
+                if event.key() == Qt.Key.Key_Right:
+                    return False
+                if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                    modifier = 'Ctrl+'
+                    key = QKeySequence(event.key()).toString()
+                    print(modifier+key)
+                    if key=='V' or key=='C':
+                        return False
+                    return True
 
         if event.type() in (QEvent.Type.MouseButtonDblClick,
                             QEvent.Type.MouseButtonPress,
