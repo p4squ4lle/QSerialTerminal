@@ -11,6 +11,7 @@ MAIN_WINDOW_TITLE = 'QSerTer'
 MAIN_WINDOW_MIN_SIZE = QSize(400, 300)
 
 DEFAULT_BAUDRATES = ['9600', '19200', '115200']
+
 KEYS_TO_BYPASS = [Qt.Key.Key_PageUp,
                   Qt.Key.Key_PageDown,
                   Qt.Key.Key_Home,
@@ -77,7 +78,6 @@ class UI_SerialTerminal(QMainWindow):
         self.central_widget_layout.addLayout(self.port_baud_connect_layout)
         self.central_widget_layout.addWidget(self.terminal)
 
-
         self.central_widget = QWidget()
         self.central_widget.setLayout(self.central_widget_layout)
 
@@ -94,9 +94,6 @@ class UI_SerialTerminal(QMainWindow):
         if obj is self.terminal and self.terminal.hasFocus():
             if event.type() == QEvent.Type.KeyPress:
                 if event.key() in KEYS_TO_BYPASS:
-                    return True
-                if event.key() == Qt.Key.Key_Return:
-                    self.on_enter_pressed()
                     return True
                 if event.key() == Qt.Key.Key_Backspace:
                     return self.on_backspace_pressed()
@@ -125,13 +122,6 @@ class UI_SerialTerminal(QMainWindow):
                 return True
 
         return super().eventFilter(obj, event)
-
-    def on_enter_pressed(self):
-        self.terminal.setReadOnly(True)
-        self.terminal.insertPlainText('\ncommand was sent')
-        self.terminal.insertPlainText('\nthats the answer: yeah\n')
-        self.terminal.setReadOnly(False)
-        self.terminal.insertPlainText('>>> ')
         
     def on_backspace_pressed(self):
         if self.cursor_col < 5:

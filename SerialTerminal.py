@@ -1,3 +1,4 @@
+from PySide6.QtCore import Qt, QEvent
 from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
@@ -23,6 +24,7 @@ class SerialTerminal(UI_SerialTerminal):
         self.connect_btn.clicked.connect(self.on_connect_btn_clicked)
         self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
 
+        self.terminal.installEventFilter(self)
 
 
     def on_connect_btn_clicked(self):
@@ -46,6 +48,21 @@ class SerialTerminal(UI_SerialTerminal):
         self.disconnect_btn.setEnabled(False)
 
         self.terminal.setReadOnly(True)
+
+    def eventFilter(self, obj, event):
+        if obj is self.terminal and self.terminal.hasFocus():
+            if event.type() == QEvent.Type.KeyPress:
+                if event.key() == Qt.Key.Key_Return:
+                    self.on_enter_pressed()
+                    return True
+        return super().eventFilter(obj, event)
+
+    def on_enter_pressed(self):
+        self.terminal.setReadOnly(True)
+        self.terminal.insertPlainText('\ncommand was sent')
+        self.terminal.insertPlainText('\nthats the answer: yeah\n')
+        self.terminal.setReadOnly(False)
+        self.terminal.insertPlainText('>>> ')
 
 if __name__ == '__main__':
     from main import main
