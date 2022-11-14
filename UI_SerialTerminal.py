@@ -97,12 +97,6 @@ class UI_SerialTerminal(QMainWindow):
                     return True
                 if event.key() == Qt.Key.Key_Backspace:
                     return self.on_backspace_pressed()
-                if event.key() == Qt.Key.Key_Up:
-                    print('up key was pressed')
-                    return True
-                if event.key() == Qt.Key.Key_Down:
-                    print('down key was pressed')
-                    return True
                 if event.key() == Qt.Key.Key_Left:
                     return self.on_backspace_pressed()
                 if event.key() == Qt.Key.Key_Right:
