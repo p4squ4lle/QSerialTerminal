@@ -1,14 +1,12 @@
 from PySide6.QtCore import Qt, QEvent
-from PySide6.QtWidgets import (
-    QMainWindow,
-    QPushButton,
-)
+from PySide6.QtGui import QTextCursor
 
 from UI_SerialTerminal import UI_SerialTerminal
 from SerialConnection import SerialConnection
 
 SERIAL_TIMEOUT = 1    # [seconds]
 
+CYCLE_COMMANDS_KEYS = [Qt.Key.Key_Up, Qt.Key.Key_Down]
 
 def ps(thing_to_print=1):
         print(thing_to_print)
@@ -25,6 +23,8 @@ class SerialTerminal(UI_SerialTerminal):
         self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
 
         self.terminal.installEventFilter(self)
+        self.terminal_command_idx = 0
+        
 
 
     def on_connect_btn_clicked(self):
@@ -46,37 +46,64 @@ class SerialTerminal(UI_SerialTerminal):
         self.ser.close()
         self.connect_btn.setEnabled(True)
         self.disconnect_btn.setEnabled(False)
-
+        self.terminal.insertPlainText('\n')
         self.terminal.setReadOnly(True)
 
     def eventFilter(self, obj, event):
         if obj is self.terminal and self.terminal.hasFocus():
             if event.type() == QEvent.Type.KeyPress:
-                if event.key() == Qt.Key.Key_Return:
+                key = event.key()
+                if key == Qt.Key.Key_Return:
                     self.on_enter_pressed()
                     return True
-                if event.key() == Qt.Key.Key_Up:
-                    print('up key was pressed')
-                    return True
-                if event.key() == Qt.Key.Key_Down:
-                    print('down key was pressed')
-                    return True
+                if key in CYCLE_COMMANDS_KEYS:
+                    if key == Qt.Key.Key_Up:
+                        self.terminal_command_idx -= 1
+                        self.terminal_command_idx = max(
+                            -len(self.ser.last_commands), 
+                            self.terminal_command_idx
+                        )
+                    if key == Qt.Key.Key_Down:
+                        self.terminal_command_idx += 1
+                        self.terminal_command_idx = min(
+                            0, self.terminal_command_idx
+                        )
+                    return self.cycle_commands()
 
         return super().eventFilter(obj, event)
 
     def on_enter_pressed(self):
+        self.terminal_command_idx = 0
+
         terminal_text = self.terminal.toPlainText()
-        current_command = terminal_text.split('\n')[-1][4:]
+        current_command = terminal_text.split('>>> ')[-1]
+        print(current_command)
+        terminal_cursor = self.terminal.textCursor()
+        terminal_cursor.movePosition(QTextCursor.End)
+        self.terminal.setTextCursor(terminal_cursor)
         self.terminal.setReadOnly(True)
-        self.terminal.insertPlainText('\nCommand: ')
-        self.terminal.insertPlainText(current_command)
+        
         self.ser.send_string(current_command)
         self.ser.read_string()
         current_answer = self.ser.last_messages[-1]
-        self.terminal.insertPlainText('\nthats the answer: ')
-        self.terminal.insertPlainText(current_answer)
+
+        self.terminal.insertPlainText(f'\n{current_answer}\r')
         self.terminal.setReadOnly(False)
-        self.terminal.insertPlainText('\n>>> ')
+        self.terminal.insertPlainText('>>> ')
+        self.terminal.ensureCursorVisible()       
+    
+    def cycle_commands(self):
+        terminal_text = self.terminal.toPlainText()
+        text_upto_command = '>>> '.join(terminal_text.split('>>> ')[:-1])
+        self.terminal.clear()
+        self.terminal.insertPlainText(text_upto_command)
+        self.terminal.insertPlainText('>>> ')
+        if self.terminal_command_idx<0:
+            self.terminal.insertPlainText(
+            self.ser.last_commands[self.terminal_command_idx]
+        )
+        self.terminal.ensureCursorVisible()
+        return True
 
 if __name__ == '__main__':
     from main import main
