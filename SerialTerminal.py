@@ -55,14 +55,28 @@ class SerialTerminal(UI_SerialTerminal):
                 if event.key() == Qt.Key.Key_Return:
                     self.on_enter_pressed()
                     return True
+                if event.key() == Qt.Key.Key_Up:
+                    print('up key was pressed')
+                    return True
+                if event.key() == Qt.Key.Key_Down:
+                    print('down key was pressed')
+                    return True
+
         return super().eventFilter(obj, event)
 
     def on_enter_pressed(self):
+        terminal_text = self.terminal.toPlainText()
+        current_command = terminal_text.split('\n')[-1][4:]
         self.terminal.setReadOnly(True)
-        self.terminal.insertPlainText('\ncommand was sent')
-        self.terminal.insertPlainText('\nthats the answer: yeah\n')
+        self.terminal.insertPlainText('\nCommand: ')
+        self.terminal.insertPlainText(current_command)
+        self.ser.send_string(current_command)
+        self.ser.read_string()
+        current_answer = self.ser.last_messages[-1]
+        self.terminal.insertPlainText('\nthats the answer: ')
+        self.terminal.insertPlainText(current_answer)
         self.terminal.setReadOnly(False)
-        self.terminal.insertPlainText('>>> ')
+        self.terminal.insertPlainText('\n>>> ')
 
 if __name__ == '__main__':
     from main import main

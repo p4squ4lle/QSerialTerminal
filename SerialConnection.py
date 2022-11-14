@@ -41,11 +41,14 @@ class SerialConnection():
 
     def send_string(self, string):
         if self.ser:
-            self.ser.write(string)
+            self.last_commands.append(string)
+            mgs_to_send = f'#{string}\n'
+            self.ser.write(bytes(mgs_to_send, 'utf-8'))
 
     def read_string(self):
         if self.ser:
-            self.last_message = self.ser.read()
+            msg_from_serport = self.ser.read_until('\r')
+            self.last_messages.append(msg_from_serport.decode('utf-8'))
 
     def get_portinfo(self):
         ports = serial.tools.list_ports.comports()
