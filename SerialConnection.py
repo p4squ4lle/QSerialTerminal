@@ -35,10 +35,8 @@ class SerialConnection():
 
     def refresh_portlist(self):
         self.port_info = self.get_portinfo()
-        self.num_ports = len(self.port_info.keys())
-        self.available_ports = [self.port_info[i]['name']
-                                for i in range(self.num_ports)]
-
+        self.available_ports = [k for k in self.port_info.keys()]
+        
     def send_string(self, string):
         if self.ser:
             self.last_commands.append(string)
@@ -54,18 +52,16 @@ class SerialConnection():
         ports = serial.tools.list_ports.comports()
         port_info = {}
         for i, p in enumerate(ports):
-            port_info[i] = {'device': p.device,
-                            'name': p.name,
-                            'description': p.description,
-                            'hwid': p.hwid,
-                            'vid': p.vid,
-                            'pid': p.pid,
-                            'serial_number': p.serial_number,
-                            'location': p.location,
-                            'manufacturer': p.manufacturer,
-                            'product': p.product,
-                            'interface': p.interface
-                            }
+            port_info[p.name] = {'device': p.device,
+                                 'description': p.description,
+                                 'hwid': p.hwid,
+                                 'vid': p.vid,
+                                 'pid': p.pid,
+                                 'serial_number': p.serial_number,
+                                 'location': p.location,
+                                 'manufacturer': p.manufacturer,
+                                 'product': p.product,
+                                 'interface': p.interface}
         return port_info
 
 
