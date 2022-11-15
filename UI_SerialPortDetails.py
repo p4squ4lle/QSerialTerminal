@@ -9,10 +9,11 @@ class UI_SerialPortDetails(QTreeWidget):
         
         items = []
         for key, values in details.items():
-            item = QTreeWidgetItem([f'Port{key}'])
+            item = QTreeWidgetItem([key])
             for k, v in values.items():
-                child = QTreeWidgetItem([k, v])
-                item.addChild(child)
+                if v:
+                    child = QTreeWidgetItem([k, v])
+                    item.addChild(child)
             items.append(item)
 
         self.insertTopLevelItems(0, items)
