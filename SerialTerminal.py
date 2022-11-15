@@ -2,6 +2,7 @@ from PySide6.QtCore import Qt, QEvent
 from PySide6.QtGui import QTextCursor
 
 from UI_SerialTerminal import UI_SerialTerminal
+from UI_SerialPortDetails import UI_SerialPortDetails
 from SerialConnection import SerialConnection
 
 SERIAL_TIMEOUT = 1    # [seconds]
@@ -15,12 +16,16 @@ class SerialTerminal(UI_SerialTerminal):
     def __init__(self):
         super().__init__()
         
+        self.details_window = None
+
         self.ser = SerialConnection()
         self.port_combo.clear()
         self.port_combo.addItems(self.ser.available_ports)
 
         self.connect_btn.clicked.connect(self.on_connect_btn_clicked)
         self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
+        self.refresh_btn.clicked.connect(self.on_refresh_btn_clicked)
+        self.details_btn.clicked.connect(self.on_details_btn_clicked)
 
         self.terminal.installEventFilter(self)
         self.terminal_command_idx = 0
@@ -37,6 +42,7 @@ class SerialTerminal(UI_SerialTerminal):
             self.disconnect_btn.setEnabled(True)
             self.connect_btn.setEnabled(False)
             self.connect_btn.setText("connect")
+            self.details_btn.setEnabled(True)
 
             self.terminal.setReadOnly(False)
             self.terminal.setFocus()
@@ -48,6 +54,18 @@ class SerialTerminal(UI_SerialTerminal):
         self.disconnect_btn.setEnabled(False)
         self.terminal.insertPlainText('\n')
         self.terminal.setReadOnly(True)
+
+    def on_refresh_btn_clicked(self):
+        self.ser.refresh_portlist()
+        self.port_combo.clear()
+        self.port_combo.addItems(self.ser.available_ports)
+
+    def on_details_btn_clicked(self):
+        dtls = self.ser.get_portinfo()
+        if not self.details_window:
+            self.details_window = UI_SerialPortDetails(dtls)
+        self.details_window.show()
+        print(dtls)
 
     def eventFilter(self, obj, event):
         if obj is self.terminal and self.terminal.hasFocus():

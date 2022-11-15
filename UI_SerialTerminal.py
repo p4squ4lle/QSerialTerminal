@@ -37,21 +37,23 @@ class UI_SerialTerminal(QMainWindow):
         # Port Combo and Baudrate Combo
         # =====================================================================
         self.port_label = QLabel('Port')
-        self.port_combo = QComboBox()
         self.port_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+        self.port_combo = QComboBox()
         
         self.baud_label = QLabel('Baudrate')
+        self.baud_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.baud_combo = QComboBox()
         self.baud_combo.addItems(DEFAULT_BAUDRATES)
-        self.baud_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+        self.baud_combo.setCurrentIndex(2)
         
         # =====================================================================
-        # Connect and Disconnect Buttons
+        # Connect, Disconnect, Refresh and Details Buttons
         # =====================================================================
-        self.connect_layout = QHBoxLayout()
         self.connect_btn = QPushButton('Connect')
         self.disconnect_btn = QPushButton('Disconnect')
-        self.disconnect_btn.setEnabled(True)
+        self.disconnect_btn.setEnabled(False)
+        self.refresh_btn = QPushButton('Refresh')
+        self.details_btn = QPushButton('Details...')
 
         # =====================================================================
         # Terminal UI
@@ -69,28 +71,30 @@ class UI_SerialTerminal(QMainWindow):
 
         # =====================================================================
         # Layout
-        # =====================================================================
-        self.central_widget_layout = QVBoxLayout()
-        self.port_baud_connect_layout = QVBoxLayout()
-        self.port_baud_layout = QHBoxLayout()
+        # =====================================================================   
         self.port_layout = QHBoxLayout()
-        self.baud_layout = QHBoxLayout()
-
         self.port_layout.addWidget(self.port_label)
         self.port_layout.addWidget(self.port_combo)
 
+        self.baud_layout = QHBoxLayout()
         self.baud_layout.addWidget(self.baud_label)
         self.baud_layout.addWidget(self.baud_combo)
 
+        self.port_baud_layout = QHBoxLayout()
         self.port_baud_layout.addLayout(self.port_layout)
         self.port_baud_layout.addLayout(self.baud_layout)
 
+        self.connect_layout = QHBoxLayout()
         self.connect_layout.addWidget(self.connect_btn)
         self.connect_layout.addWidget(self.disconnect_btn)
+        self.connect_layout.addWidget(self.refresh_btn)
+        self.connect_layout.addWidget(self.details_btn)
 
+        self.port_baud_connect_layout = QVBoxLayout()
         self.port_baud_connect_layout.addLayout(self.port_baud_layout)
         self.port_baud_connect_layout.addLayout(self.connect_layout)
 
+        self.central_widget_layout = QVBoxLayout()
         self.central_widget_layout.addLayout(self.port_baud_connect_layout)
         self.central_widget_layout.addWidget(self.terminal)
 
