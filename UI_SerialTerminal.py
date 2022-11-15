@@ -24,45 +24,37 @@ class UI_SerialTerminal(QMainWindow):
         self.setWindowTitle(MAIN_WINDOW_TITLE)
         self.setMinimumSize(MAIN_WINDOW_MIN_SIZE)
 
+        self.central_widget = QWidget()
+
+        # =====================================================================
+        # Statusbar
+        # =====================================================================
         self.statusbar = QStatusBar()
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
 
-        self.central_widget_layout = QVBoxLayout()
-        self.port_baud_connect_layout = QVBoxLayout()
-        self.port_baud_layout = QHBoxLayout()
-        self.port_layout = QHBoxLayout()
-        self.baud_layout = QHBoxLayout()
-
+        # =====================================================================
+        # Port Combo and Baudrate Combo
+        # =====================================================================
         self.port_label = QLabel('Port')
         self.port_combo = QComboBox()
         self.port_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        self.port_layout.addWidget(self.port_label)
-        self.port_layout.addWidget(self.port_combo)
-
+        
         self.baud_label = QLabel('Baudrate')
         self.baud_combo = QComboBox()
         self.baud_combo.addItems(DEFAULT_BAUDRATES)
         self.baud_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        self.baud_layout.addWidget(self.baud_label)
-        self.baud_layout.addWidget(self.baud_combo)
-
-        self.port_baud_layout.addLayout(self.port_layout)
-        self.port_baud_layout.addLayout(self.baud_layout)
-
+        
+        # =====================================================================
+        # Connect and Disconnect Buttons
+        # =====================================================================
         self.connect_layout = QHBoxLayout()
         self.connect_btn = QPushButton('Connect')
         self.disconnect_btn = QPushButton('Disconnect')
         self.disconnect_btn.setEnabled(True)
 
-        self.connect_layout.addWidget(self.connect_btn)
-        self.connect_layout.addWidget(self.disconnect_btn)
-
-        self.port_baud_connect_layout.addLayout(self.port_baud_layout)
-        self.port_baud_connect_layout.addLayout(self.connect_layout)
-
         # =====================================================================
-        # Terminal
+        # Terminal UI
         # =====================================================================
         self.cursor_line = 0
         self.cursor_col = 0
@@ -75,12 +67,34 @@ class UI_SerialTerminal(QMainWindow):
         self.terminal.installEventFilter(self)
         self.terminal.viewport().installEventFilter(self)
 
+        # =====================================================================
+        # Layout
+        # =====================================================================
+        self.central_widget_layout = QVBoxLayout()
+        self.port_baud_connect_layout = QVBoxLayout()
+        self.port_baud_layout = QHBoxLayout()
+        self.port_layout = QHBoxLayout()
+        self.baud_layout = QHBoxLayout()
+
+        self.port_layout.addWidget(self.port_label)
+        self.port_layout.addWidget(self.port_combo)
+
+        self.baud_layout.addWidget(self.baud_label)
+        self.baud_layout.addWidget(self.baud_combo)
+
+        self.port_baud_layout.addLayout(self.port_layout)
+        self.port_baud_layout.addLayout(self.baud_layout)
+
+        self.connect_layout.addWidget(self.connect_btn)
+        self.connect_layout.addWidget(self.disconnect_btn)
+
+        self.port_baud_connect_layout.addLayout(self.port_baud_layout)
+        self.port_baud_connect_layout.addLayout(self.connect_layout)
+
         self.central_widget_layout.addLayout(self.port_baud_connect_layout)
         self.central_widget_layout.addWidget(self.terminal)
 
-        self.central_widget = QWidget()
         self.central_widget.setLayout(self.central_widget_layout)
-
         self.setCentralWidget(self.central_widget)
 
     def on_cursor_position_changed(self):
