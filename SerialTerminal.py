@@ -29,8 +29,6 @@ class SerialTerminal(UI_SerialTerminal):
 
         self.terminal.installEventFilter(self)
         self.terminal_command_idx = 0
-        
-
 
     def on_connect_btn_clicked(self):
         if not self.ser.connected:
@@ -42,7 +40,6 @@ class SerialTerminal(UI_SerialTerminal):
             self.disconnect_btn.setEnabled(True)
             self.connect_btn.setEnabled(False)
             self.connect_btn.setText("connect")
-            self.details_btn.setEnabled(True)
 
             self.terminal.setReadOnly(False)
             self.terminal.setFocus()
@@ -65,7 +62,6 @@ class SerialTerminal(UI_SerialTerminal):
         if not self.details_window:
             self.details_window = UI_SerialPortDetails(dtls)
         self.details_window.show()
-        print(dtls)
 
     def eventFilter(self, obj, event):
         if obj is self.terminal and self.terminal.hasFocus():
