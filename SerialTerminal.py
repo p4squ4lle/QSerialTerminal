@@ -19,27 +19,35 @@ class SerialTerminal(UI_SerialTerminal):
         self.details_window = None
 
         self.ser = SerialConnection()
-        self.port_combo.clear()
-        self.port_combo.addItems(self.ser.available_ports)
+        self.port_dropdown.clear()
+        self.port_dropdown.addItems(self.ser.available_ports)
 
-        self.connect_btn.clicked.connect(self.on_connect_btn_clicked)
-        self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
-        self.refresh_btn.clicked.connect(self.on_refresh_btn_clicked)
-        self.details_btn.clicked.connect(self.on_details_btn_clicked)
+        # self.port_combo.clear()
+        # self.port_combo.addItems(self.ser.available_ports)
+        # self.connect_btn.clicked.connect(self.on_connect_btn_clicked)
+        # self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
+        # self.refresh_btn.clicked.connect(self.on_refresh_btn_clicked)
+        # self.details_btn.clicked.connect(self.on_details_btn_clicked)
+
+        self.connect_action.triggered.connect(self.on_connect_btn_clicked)
+        self.disconnect_action.triggered.connect(
+            self.on_disconnect_btn_clicked)
+        self.refresh_action.triggered.connect(self.on_refresh_btn_clicked)
+        self.details_action.triggered.connect(self.on_details_btn_clicked)
 
         self.terminal.installEventFilter(self)
         self.terminal_command_idx = 0
 
     def on_connect_btn_clicked(self):
         if not self.ser.connected:
-            self.connect_btn.setText("...")
-            self.port = self.port_combo.currentData(0)
-            self.baudrate = int(self.baud_combo.currentData(0))
+            self.connect_action.setText("...")
+            self.port = self.port_dropdown.currentData(0)
+            self.baudrate = int(self.baud_dropdown.currentData(0))
             self.timeout = SERIAL_TIMEOUT
             self.ser.connect(self.port, self.baudrate, self.timeout)
-            self.disconnect_btn.setEnabled(True)
-            self.connect_btn.setEnabled(False)
-            self.connect_btn.setText("connect")
+            self.disconnect_action.setEnabled(True)
+            self.connect_action.setEnabled(False)
+            self.connect_action.setText(">>>")
 
             self.terminal.setReadOnly(False)
             self.terminal.setFocus()
@@ -47,15 +55,15 @@ class SerialTerminal(UI_SerialTerminal):
 
     def on_disconnect_btn_clicked(self):
         self.ser.close()
-        self.connect_btn.setEnabled(True)
-        self.disconnect_btn.setEnabled(False)
+        self.connect_action.setEnabled(True)
+        self.disconnect_action.setEnabled(False)
         self.terminal.insertPlainText('\n')
         self.terminal.setReadOnly(True)
 
     def on_refresh_btn_clicked(self):
         self.ser.refresh_portlist()
-        self.port_combo.clear()
-        self.port_combo.addItems(self.ser.available_ports)
+        self.port_dropdown.clear()
+        self.port_dropdown.addItems(self.ser.available_ports)
 
     def on_details_btn_clicked(self):
         dtls = self.ser.get_portinfo()
