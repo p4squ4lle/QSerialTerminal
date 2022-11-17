@@ -1,8 +1,9 @@
 from PySide6.QtCore import QSize, Qt, QEvent
-from PySide6.QtGui import QKeySequence
+from PySide6.QtGui import QKeySequence, QAction
 from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel, QMainWindow,
                                QPlainTextEdit, QPushButton, QVBoxLayout,
-                               QWidget, QStatusBar,)
+                               QWidget, QStatusBar, QToolBar)
+
 
 # =============================================================================
 # CONSTANTS
@@ -17,6 +18,8 @@ KEYS_TO_BYPASS = [Qt.Key.Key_PageUp,
                   Qt.Key.Key_Home,
                   Qt.Key.Key_End]
 
+LABEL_PADDING = 6    # [pixel]
+
 class UI_SerialTerminal(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -25,6 +28,45 @@ class UI_SerialTerminal(QMainWindow):
         self.setMinimumSize(MAIN_WINDOW_MIN_SIZE)
 
         self.central_widget = QWidget()
+
+        # =====================================================================
+        # Toolbar
+        # =====================================================================
+        self.toolbar = QToolBar()
+        self.toolbar.setMovable(False)
+        self.toolbar.toggleViewAction().setVisible(False)
+
+        self.port_lbl = QLabel('Port :')
+        self.port_lbl.setStyleSheet(f'padding :{LABEL_PADDING}px')
+        self.toolbar.addWidget(self.port_lbl)
+        self.port_dropdown = QComboBox()
+        self.port_dropdown.setStatusTip('Select serial port')
+        self.toolbar.addWidget(self.port_dropdown)
+
+        self.refresh_action = QAction(' O ', self)
+        self.refresh_action.setStatusTip('Refresh serial port list')
+        self.toolbar.addAction(self.refresh_action)
+
+        self.baud_lbl = QLabel('Baudrate :')
+        self.baud_lbl.setStyleSheet(f'padding :{LABEL_PADDING}px')
+        self.toolbar.addWidget(self.baud_lbl)
+        self.baud_dropdown = QComboBox()
+        self.baud_dropdown.setStatusTip('Select baudrate for serial connection')
+        self.toolbar.addWidget(self.baud_dropdown)
+        
+        self.connect_action = QAction('>>>', self)
+        self.connect_action.setStatusTip('Establish serial connection')
+        self.toolbar.addAction(self.connect_action)
+
+        self.disconnect_action = QAction('<<X', self)
+        self.disconnect_action.setStatusTip('Close serial connection')
+        self.toolbar.addAction(self.disconnect_action)
+
+        self.details_action = QAction('...', self)
+        self.details_action.setStatusTip('Show details about available ports')
+        self.toolbar.addAction(self.details_action)
+
+        self.addToolBar(self.toolbar)
 
         # =====================================================================
         # Statusbar
