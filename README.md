@@ -15,3 +15,4 @@
       connected port
 - [ ] find a way to still allow text selection with the mouse
       (might be possible by looking at the QTextEdit.TextCursor()
+- [ ] detailed port description: make tree view expanded
