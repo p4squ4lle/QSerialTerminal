@@ -18,7 +18,7 @@ KEYS_TO_BYPASS = [Qt.Key.Key_PageUp,
                   Qt.Key.Key_Home,
                   Qt.Key.Key_End]
 
-TOOLBAR_LABEL_PADDING = 3    # [pixel]
+TOOLBAR_LABEL_PADDING = 5    # [pixel]
 
 class UI_SerialTerminal(QMainWindow):
     def __init__(self):
