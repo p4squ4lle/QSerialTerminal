@@ -22,12 +22,12 @@ class SerialTerminal(UI_SerialTerminal):
         self.port_dropdown.clear()
         self.port_dropdown.addItems(self.ser.available_ports)
 
-        # self.port_combo.clear()
-        # self.port_combo.addItems(self.ser.available_ports)
-        # self.connect_btn.clicked.connect(self.on_connect_btn_clicked)
-        # self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
-        # self.refresh_btn.clicked.connect(self.on_refresh_btn_clicked)
-        # self.details_btn.clicked.connect(self.on_details_btn_clicked)
+        #self.port_combo.clear()
+        #self.port_combo.addItems(self.ser.available_ports)
+        #self.connect_btn.clicked.connect(self.on_connect_btn_clicked)
+        #self.disconnect_btn.clicked.connect(self.on_disconnect_btn_clicked)
+        #self.refresh_btn.clicked.connect(self.on_refresh_btn_clicked)
+        #self.details_btn.clicked.connect(self.on_details_btn_clicked)
 
         self.connect_action.triggered.connect(self.on_connect_btn_clicked)
         self.disconnect_action.triggered.connect(
@@ -99,7 +99,7 @@ class SerialTerminal(UI_SerialTerminal):
 
         terminal_text = self.terminal.toPlainText()
         current_command = terminal_text.split('>>> ')[-1]
-        print(current_command)
+        #print(current_command)
         terminal_cursor = self.terminal.textCursor()
         terminal_cursor.movePosition(QTextCursor.End)
         self.terminal.setTextCursor(terminal_cursor)
@@ -108,8 +108,8 @@ class SerialTerminal(UI_SerialTerminal):
         self.ser.send_string(current_command)
         self.ser.read_string()
         current_answer = self.ser.last_messages[-1]
-
-        self.terminal.insertPlainText(f'\n{current_answer}\r')
+        if current_answer!='':
+            self.terminal.insertPlainText(f'\n{current_answer}\r')
         self.terminal.setReadOnly(False)
         self.terminal.insertPlainText('>>> ')
         self.terminal.ensureCursorVisible()       

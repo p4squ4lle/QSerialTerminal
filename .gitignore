@@ -154,3 +154,8 @@ cython_debug/
 
 # VS Code
 .vscode/
+
+# PyInstallerBuild
+build/
+dist/
+main.spec

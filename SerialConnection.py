@@ -2,7 +2,8 @@ from serial import Serial, SerialException
 import serial.tools.list_ports
 
 DEFAULT_SERIAL_TIMEOUT = 1    # [second]
-
+END_OF_LINE = '\r\n'
+BEGINNIN_OF_LINE = ''
 
 class SerialConnection():
     """
@@ -40,13 +41,13 @@ class SerialConnection():
     def send_string(self, string):
         if self.ser:
             self.last_commands.append(string)
-            mgs_to_send = f'#{string}\n'
+            mgs_to_send = f'{BEGINNIN_OF_LINE}{string}{END_OF_LINE}'
             self.ser.write(bytes(mgs_to_send, 'utf-8'))
 
     def read_string(self):
         if self.ser:
-            msg_from_serport = self.ser.read_until('\r')
-            self.last_messages.append(msg_from_serport.decode('utf-8'))
+            msg_from_serport = self.ser.read_until(b'\r\n')
+            self.last_messages.append(msg_from_serport.decode('utf-8').strip())
 
     def get_portinfo(self):
         ports = serial.tools.list_ports.comports()

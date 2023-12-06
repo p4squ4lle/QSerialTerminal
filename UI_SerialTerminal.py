@@ -1,3 +1,4 @@
+import os
 from PySide6.QtCore import QSize, Qt, QEvent
 from PySide6.QtGui import QKeySequence, QAction, QIcon, QPixmap
 from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel, QMainWindow,
@@ -8,6 +9,8 @@ from PySide6.QtWidgets import (QComboBox, QHBoxLayout, QLabel, QMainWindow,
 # =============================================================================
 # CONSTANTS
 # =============================================================================
+BASEDIR = os.path.dirname(__file__)
+
 MAIN_WINDOW_TITLE = 'QSerTer'
 MAIN_WINDOW_MIN_SIZE = QSize(400, 300)
 
@@ -26,8 +29,8 @@ class UI_SerialTerminal(QMainWindow):
 
         self.setWindowTitle(MAIN_WINDOW_TITLE)
         self.setMinimumSize(MAIN_WINDOW_MIN_SIZE)
-        self.setWindowIcon(QIcon('./resources/icons/rs232.jpg'))
-
+        self.setWindowIcon(QIcon(os.path.join(BASEDIR, 
+                                              'resources/icons/rs232.jpg')))
         self.central_widget = QWidget()
 
         # =====================================================================
@@ -45,7 +48,9 @@ class UI_SerialTerminal(QMainWindow):
         self.port_dropdown.setStatusTip('Select serial port')
         self.toolbar.addWidget(self.port_dropdown)
 
-        self.refresh_action = QAction(QIcon('./resources/icons/refresh.jpg'), 'Refresh button', self)
+        self.refresh_action = QAction(QIcon(
+            os.path.join(BASEDIR, './resources/icons/refresh.jpg')),
+            'Refresh button', self)
         self.refresh_action.setStatusTip('Refresh serial port list')
         self.toolbar.addAction(self.refresh_action)
 
@@ -90,24 +95,24 @@ class UI_SerialTerminal(QMainWindow):
         # =====================================================================
         # Port Combo and Baudrate Combo
         # =====================================================================
-        # self.port_label = QLabel('Port')
-        # self.port_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        # self.port_combo = QComboBox()
+        #self.port_label = QLabel('Port')
+        #self.port_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+        #self.port_combo = QComboBox()
         
-        # self.baud_label = QLabel('Baudrate')
-        # self.baud_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        # self.baud_combo = QComboBox()
-        # self.baud_combo.addItems(DEFAULT_BAUDRATES)
-        # self.baud_combo.setCurrentIndex(2)
+        #self.baud_label = QLabel('Baudrate')
+        #self.baud_label.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+        #self.baud_combo = QComboBox()
+        #self.baud_combo.addItems(DEFAULT_BAUDRATES)
+        #self.baud_combo.setCurrentIndex(2)
         
         # =====================================================================
         # Connect, Disconnect, Refresh and Details Buttons
         # =====================================================================
-        # self.connect_btn = QPushButton('Connect')
-        # self.disconnect_btn = QPushButton('Disconnect')
-        # self.disconnect_btn.setEnabled(False)
-        # self.refresh_btn = QPushButton('Refresh')
-        # self.details_btn = QPushButton('Details...')
+        #self.connect_btn = QPushButton('Connect')
+        #self.disconnect_btn = QPushButton('Disconnect')
+        #self.disconnect_btn.setEnabled(False)
+        #self.refresh_btn = QPushButton('Refresh')
+        #self.details_btn = QPushButton('Details...')
 
         # =====================================================================
         # Terminal UI
@@ -127,46 +132,47 @@ class UI_SerialTerminal(QMainWindow):
         # =====================================================================
         # Layout
         # =====================================================================   
-        # self.port_layout = QHBoxLayout()
-        # self.port_layout.addWidget(self.port_label)
-        # self.port_layout.addWidget(self.port_combo)
+        #self.port_layout = QHBoxLayout()
+        #self.port_layout.addWidget(self.port_label)
+        #self.port_layout.addWidget(self.port_combo)
 
-        # self.baud_layout = QHBoxLayout()
-        # self.baud_layout.addWidget(self.baud_label)
-        # self.baud_layout.addWidget(self.baud_combo)
+        #self.baud_layout = QHBoxLayout()
+        #self.baud_layout.addWidget(self.baud_label)
+        #self.baud_layout.addWidget(self.baud_combo)
 
-        # self.port_baud_layout = QHBoxLayout()
-        # self.port_baud_layout.addLayout(self.port_layout)
-        # self.port_baud_layout.addLayout(self.baud_layout)
+        #self.port_baud_layout = QHBoxLayout()
+        #self.port_baud_layout.addLayout(self.port_layout)
+        #self.port_baud_layout.addLayout(self.baud_layout)
 
-        # self.connect_layout = QHBoxLayout()
-        # self.connect_layout.addWidget(self.connect_btn)
-        # self.connect_layout.addWidget(self.disconnect_btn)
-        # self.connect_layout.addWidget(self.refresh_btn)
-        # self.connect_layout.addWidget(self.details_btn)
+        #self.connect_layout = QHBoxLayout()
+        #self.connect_layout.addWidget(self.connect_btn)
+        #self.connect_layout.addWidget(self.disconnect_btn)
+        #self.connect_layout.addWidget(self.refresh_btn)
+        #self.connect_layout.addWidget(self.details_btn)
 
-        # self.port_baud_connect_layout = QVBoxLayout()
-        # self.port_baud_connect_layout.addLayout(self.port_baud_layout)
-        # self.port_baud_connect_layout.addLayout(self.connect_layout)
+        #self.port_baud_connect_layout = QVBoxLayout()
+        #self.port_baud_connect_layout.addLayout(self.port_baud_layout)
+        #self.port_baud_connect_layout.addLayout(self.connect_layout)
 
         self.central_widget_layout = QVBoxLayout()
         self.central_widget_layout.setContentsMargins(0,0,0,0)
-        # self.central_widget_layout.addLayout(self.port_baud_connect_layout)
+        #self.central_widget_layout.addLayout(self.port_baud_connect_layout)
         self.central_widget_layout.addWidget(self.terminal)
 
         self.central_widget.setLayout(self.central_widget_layout)
         self.setCentralWidget(self.central_widget)
 
         self.update_stylesheet(
-            css='QPlainTextEdit {color: rgb(15,255,15)}'
+            css='QPlainTextEdit {color: rgb(0,0,0)}'
+            #css='QPlainTextEdit {color: rgb(15,255,15)}'
         )
 
     def on_cursor_position_changed(self):
         cursor = self.terminal.textCursor()
         self.cursor_col = cursor.columnNumber()
         self.cursor_line = cursor.blockNumber()
-        line_col_string = f'({self.cursor_line}, {self.cursor_col})'
-        self.statusbar.showMessage(line_col_string)
+        #line_col_string = f'({self.cursor_line}, {self.cursor_col})'
+        #self.statusbar.showMessage(line_col_string)
         
     def eventFilter(self, obj, event):
         if obj is self.terminal and self.terminal.hasFocus():
